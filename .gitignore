@@ -1,0 +1,12 @@
+
+# ide
+.idea/
+
+# secrects
+.env
+
+# loggers
+*.log
+
+# database
+data/

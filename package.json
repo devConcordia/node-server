@@ -1,0 +1,10 @@
+{
+  "name": "node-server",
+  "version": "1.0.0",
+  "description": "A basic framework without dependencies for node server projects",
+  "license": "Apache",
+  "scripts": {
+    "server": "node --no-warnings --env-file=.env --experimental-sqlite src/main.mjs",
+    "migrations": "node --no-warnings --env-file=.env --experimental-sqlite ./scripts/migrations.mjs"
+  }
+}
