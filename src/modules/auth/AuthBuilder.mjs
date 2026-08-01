@@ -5,11 +5,13 @@ import {MainDatabaseExecutor} from '../../infrastructure/database/MainDatabaseEx
 import {JsonWebToken} from '../../infrastructure/security/JsonWebToken.mjs';
 import {Authorize} from '../../infrastructure/security/Authorize.mjs';
 
+import {CreateAccountUseCase} from './application/CreateAccountUseCase.mjs';
+import {LoginAccountUseCase} from './application/LoginAccountUseCase.mjs';
+import {ListAccountUseCase} from './application/ListAccountUseCase.mjs';
+
 import {AccountRepository} from './infrastructure/repositories/AccountRepository.mjs';
 import {PermissionRepository} from './infrastructure/repositories/PermissionRepository.mjs';
 import {RoleRepository} from './infrastructure/repositories/RoleRepository.mjs';
-
-import {CreateAccountUseCase, ListAccountUseCase, LoginAccountUseCase} from './application/AccountUseCase.mjs';
 
 import {LoginAccountHandler} from './infrastructure/handlers/LoginAccountHandler.mjs';
 import {ListAccountHandler} from './infrastructure/handlers/ListAccountHandler.mjs';
