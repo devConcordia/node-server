@@ -1,5 +1,4 @@
 import {Authentication} from '../../../core/security/Authentication.mjs';
-import {Account} from '../../../modules/auth/domain/Account.mjs';
 
 /** JWTAuthentication
  *
@@ -30,11 +29,9 @@ export class JWTAuthentication extends Authentication {
 
 		if (payload) {
 
-			const data = this.accountRepository.findById(payload.sub);
+			const account = this.accountRepository.findById(payload.sub);
 
-			if (data) {
-
-				const account = new Account().assign(data);
+			if (account) {
 
 				request.setCurrentAccount(account);
 
