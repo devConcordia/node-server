@@ -1,4 +1,5 @@
 import {Repository} from '../../../../core/database/Repository.mjs';
+import {Role} from '../../domain/Role.mjs';
 
 /** RoleRepository
  *
@@ -7,6 +8,10 @@ export class RoleRepository extends Repository {
 
 	get TABLE_NAME() {
 		return 'auth_roles'
+	}
+
+	get ENTITY_CLASS() {
+		return Role
 	}
 
 	/** findOneByName

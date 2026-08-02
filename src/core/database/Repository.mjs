@@ -8,9 +8,11 @@ import {Executor} from './Executor.mjs';
 export class Repository {
 
 	get TABLE_NAME() {
-
 		throw new Error(`${this.constructor.name}.TABLE_NAME: is undefined`);
+	}
 
+	get ENTITY_CLASS() {
+		throw new Error(`${this.constructor.name}.ENTITY_CLASS: is undefined`);
 	}
 
 	#executor = null;
@@ -47,16 +49,27 @@ export class Repository {
 
 	}
 
+	/** queryOne
+	 *
+	 * @param query
+	 * @param params
+	 * @returns {Object}
+	 */
 	execute(query, params = {}) {
 
 		return this.#executor.run(query, params);
 
 	}
 
+	/** queryOne
+	 *
+	 * @param query
+	 * @param params
+	 * @returns {Object}
+	 */
 	queryOne(query, params = {}) {
 
 		return this.#executor.one(query, params);
-
 
 	}
 
@@ -64,7 +77,7 @@ export class Repository {
 	 *
 	 * @param query
 	 * @param params
-	 * @returns {*}
+	 * @returns {Array}
 	 */
 	queryMany(query, params = {}) {
 
@@ -72,16 +85,56 @@ export class Repository {
 
 	}
 
+	/** findOne
+	 *
+	 * @param query
+	 * @param params
+	 * @param TypeClass 		default: ENTITY_CLASS
+	 * @returns {*}
+	 */
+	findOne(query, params = {}, TypeClass = this.ENTITY_CLASS) {
+
+		const data = this.queryOne(query, params);
+
+		if (!TypeClass) return data;
+
+		if (data)
+			return new TypeClass(data);
+
+		return null;
+
+	}
+
+	/** findMany
+	 *
+	 * @param query
+	 * @param params
+	 * @param TypeClass 		default: ENTITY_CLASS
+	 * @returns {*[]}
+	 */
+	findMany(query, params = {}, TypeClass = this.ENTITY_CLASS) {
+
+		const data = this.queryMany(query, params);
+
+		if (!TypeClass) return data;
+
+		if (data.length > 0)
+			return data.map(item => new TypeClass(item));
+
+		return [];
+
+	}
+
 	/** findById
 	 *
 	 *	@param {*} id
-	 *	@returns {Number}
+	 *	@returns {*}
 	 */
 	findById(id) {
 
 		const query = `select * from ${this.TABLE_NAME} where ${this.#primaryKey} = ?`;
 
-		return this.#executor.one(query, [id]);
+		return this.findOne(query, [id]);
 
 	}
 
@@ -96,7 +149,7 @@ export class Repository {
 
 		const {query, params} = QueryBuilder.fromCriteria(this.TABLE_NAME, criteria);
 
-		return this.queryMany(query, params);
+		return this.findMany(query, params);
 
 	}
 

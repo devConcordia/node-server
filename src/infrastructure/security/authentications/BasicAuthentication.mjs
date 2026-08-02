@@ -1,5 +1,4 @@
 import {Authentication} from '../../../core/security/Authentication.mjs';
-import {Account} from '../../../modules/auth/domain/Account.mjs';
 import {Password} from '../Password.mjs';
 
 /** BasicAuthentication
@@ -25,19 +24,14 @@ export class BasicAuthentication extends Authentication {
 
 		const [email, password] = request.getBasicAuthorization().split(/:/);
 
-		const data = this.accountRepository.findOneByEmail(email);
+		const account = this.accountRepository.findOneByEmail(email);
 
-		if (data) {
+		if (account && Password.verify(account.password_hash, password)) {
 
-			const account = new Account(data);
+			request.setCurrentAccount(account);
 
-			if (Password.verify(account.password_hash, password)) {
+			return true;
 
-				request.setCurrentAccount(account);
-
-				return true;
-
-			}
 		}
 
 		return false;

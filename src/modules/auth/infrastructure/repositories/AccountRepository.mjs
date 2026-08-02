@@ -1,4 +1,5 @@
 import {Repository} from '../../../../core/database/Repository.mjs';
+import {Account} from '../../domain/Account.mjs';
 
 /** AccountRepository
  *
@@ -9,17 +10,18 @@ export class AccountRepository extends Repository {
 		return 'auth_accounts'
 	}
 
+	get ENTITY_CLASS() {
+		return Account
+	}
+
 	/** findOneByEmail
 	 *
 	 * @param email
-	 * @returns {Object}
+	 * @returns {Account}
 	 */
 	findOneByEmail(email) {
 
-		return this.queryOne(
-			'select * from ' + this.TABLE_NAME + ' where email = :email',
-			{email}
-		);
+		return this.findOne('select * from ' + this.TABLE_NAME + ' where email = :email', {email});
 
 	}
 

@@ -1,4 +1,5 @@
 import {Repository} from '../../../../core/database/Repository.mjs';
+import {Permission} from '../../domain/Permission.mjs';
 
 /** PermissionRepository
  *
@@ -9,14 +10,18 @@ export class PermissionRepository extends Repository {
 		return 'auth_permissions'
 	}
 
+	get ENTITY_CLASS() {
+		return Permission
+	}
+
 	/** findOneByName
 	 *
 	 * @param name
-	 * @returns {Object}
+	 * @returns {Permission}
 	 */
 	findOneByName(name) {
 
-		return this.queryOne(`select * from ${this.TABLE_NAME} where name = :name`, {name});
+		return this.findOne(`select * from ${this.TABLE_NAME} where name = :name`, {name});
 
 	}
 
