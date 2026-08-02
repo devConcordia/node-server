@@ -11,6 +11,7 @@ import {JWTAuthentication} from './security/authentications/JWTAuthentication.mj
 import {AccountRepository} from '../modules/auth/infrastructure/repositories/AccountRepository.mjs';
 import {PermissionRepository} from '../modules/auth/infrastructure/repositories/PermissionRepository.mjs';
 import {RoleRepository} from '../modules/auth/infrastructure/repositories/RoleRepository.mjs';
+import {BasicAuthentication} from './security/authentications/BasicAuthentication.mjs';
 
 /** AppBuilder
  *
@@ -30,10 +31,10 @@ export class AppBuilder extends Builder {
 		);
 
 		///
-		app.get(Authenticator)
-			.registry(
-				new JWTAuthentication(app.get(JsonWebToken), accountRepository)
-			);
+		const authenticator = app.get(Authenticator);
+
+		authenticator.registry(new BasicAuthentication(accountRepository));
+		authenticator.registry(new JWTAuthentication(app.get(JsonWebToken), accountRepository));
 
 	}
 

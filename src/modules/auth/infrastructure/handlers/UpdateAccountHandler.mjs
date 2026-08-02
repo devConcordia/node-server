@@ -1,4 +1,5 @@
 import {Handler} from '../../../../core/http/Handler.mjs';
+import {JWTAuthentication} from '../../../../infrastructure/security/authentications/JWTAuthentication.mjs';
 
 /** UpdateAccountHandler
  *
@@ -12,6 +13,10 @@ export class UpdateAccountHandler extends Handler {
 
 	get ROUTE() {
 		return '/api/accounts/:accountId';
+	}
+
+	get AUTH() {
+		return [JWTAuthentication];
 	}
 
 	constructor(updateAccountUseCase) {

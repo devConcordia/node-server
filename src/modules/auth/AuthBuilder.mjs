@@ -38,7 +38,8 @@ export class AuthBuilder extends Builder {
 
 		app.set(new CreateAccountUseCase(accountRepository));
 		app.set(new ListAccountUseCase(accountRepository));
-		app.set(new LoginAccountUseCase(app.get(JsonWebToken), accountRepository));
+
+		app.set(new LoginAccountUseCase(app.get(JsonWebToken)));
 
 	}
 

@@ -72,6 +72,19 @@ export class Repository {
 
 	}
 
+	/** findById
+	 *
+	 *	@param {*} id
+	 *	@returns {Number}
+	 */
+	findById(id) {
+
+		const query = `select * from ${this.TABLE_NAME} where ${this.#primaryKey} = ?`;
+
+		return this.#executor.one(query, [id]);
+
+	}
+
 	/** find
 	 *
 	 * @param {Criteria} criteria

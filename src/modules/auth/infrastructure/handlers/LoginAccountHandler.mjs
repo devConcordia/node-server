@@ -1,4 +1,5 @@
 import {Handler} from '../../../../core/http/Handler.mjs';
+import {BasicAuthentication} from '../../../../infrastructure/security/authentications/BasicAuthentication.mjs';
 
 /** LoginAccountHandler
  *
@@ -13,6 +14,10 @@ export class LoginAccountHandler extends Handler {
 		return '/api/accounts/login';
 	}
 
+	get AUTH() {
+		return [BasicAuthentication];
+	}
+
 	constructor(loginAccountUseCase) {
 		super();
 		this.loginAccountUseCase = loginAccountUseCase;
@@ -20,18 +25,14 @@ export class LoginAccountHandler extends Handler {
 
 	resolve(request, response) {
 
-		const [email, password] = request.getBasicAuthorization().split(/:/);
-		const token = this.loginAccountUseCase.execute(email, password);
+		const account = request.getCurrentAccount();
 
-		if (token) {
+		if (!account)
+			return response.replyError(401, 'unauthorized', 'Account login failed');
 
-			response.replyJson(200, token);
+		const data = this.loginAccountUseCase.execute(account);
 
-		} else {
-
-			response.replyJson(403, {message: 'Account login failed'});
-
-		}
+		response.replyJson(200, data);
 
 	}
 

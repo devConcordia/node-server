@@ -1,4 +1,5 @@
 import {Handler} from '../../../../core/http/Handler.mjs';
+import {JWTAuthentication} from '../../../../infrastructure/security/authentications/JWTAuthentication.mjs';
 
 /** CreateAccountHandler
  *
@@ -11,6 +12,10 @@ export class CreateAccountHandler extends Handler {
 
 	get ROUTE() {
 		return '/api/accounts';
+	}
+
+	get AUTH() {
+		return [JWTAuthentication];
 	}
 
 	/**

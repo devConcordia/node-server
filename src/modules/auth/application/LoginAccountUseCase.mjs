@@ -1,4 +1,4 @@
-import {Password} from '../../../infrastructure/security/Password.mjs';
+import {LoginAccountDTO} from './dto/LoginAccountDTO.mjs';
 
 /** LoginAccountUseCase
  *
@@ -8,27 +8,21 @@ export class LoginAccountUseCase {
 	/**
 	 *
 	 * @param {JsonWebToken} jsonWebToken
-	 * @param {AccountRepository} accountRepository
 	 */
-	constructor(jsonWebToken, accountRepository) {
-		this.accountRepository = accountRepository;
+	constructor(jsonWebToken) {
 		this.jsonWebToken = jsonWebToken;
 	}
 
 	/** execute
 	 *
-	 * @param {String} email
-	 * @param {String} password
-	 * @return {String|null}
+	 * @param {Account} account
+	 * @return {LoginAccountDTO}
 	 */
-	execute(email, password) {
+	execute(account) {
 
-		const account = this.accountRepository.findOneByEmail(email);
+		const token = this.jsonWebToken.create({sub: account.id}, 3600);
 
-		if (account && Password.verify(account.password_hash, password))
-			return this.jsonWebToken.create({sub: account.id}, 3600);
-
-		return null;
+		return new LoginAccountDTO(account, token);
 
 	}
 

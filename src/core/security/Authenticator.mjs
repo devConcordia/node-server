@@ -5,7 +5,7 @@ import {Authentication} from './Authentication.mjs';
  */
 export class Authenticator {
 
-	#authentications = Object.create(null);
+	#authentications = new Map();
 
 	/** registry
 	 *
@@ -16,7 +16,7 @@ export class Authenticator {
 		if (!(authentication instanceof Authentication))
 			throw new Error(`Authenticator.registry: @param '${authentication}' is not an instance of Authentication`);
 
-		this.#authentications[authentication.constructor.name] = authentication;
+		this.#authentications.set(authentication.constructor, authentication);
 
 	}
 
@@ -33,12 +33,12 @@ export class Authenticator {
 		if (allowedList.length === 0)
 			return true;
 
-		for (const authName of allowedList) {
+		for (const authClass of allowedList) {
 
-			const authenticator = this.#authentications[authName];
+			if (!this.#authentications.has(authClass))
+				throw new Error(`Authenticator.authenticate: '${authClass.name}' not registered`);
 
-			if (!authenticator)
-				throw new Error(`Authenticator.authenticate: '${authName}' not registered`);
+			const authenticator = this.#authentications.get(authClass);
 
 			if (authenticator.fromRequest(requestContext))
 				return true;
