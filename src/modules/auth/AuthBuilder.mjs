@@ -1,5 +1,5 @@
 import {Builder} from '../../core/Builder.mjs';
-import {Router} from '../../core/http/Router.mjs';
+import {Router} from '../../core/network/Router.mjs';
 import {CreateAccountHandler} from './infrastructure/handlers/CreateAccountHandler.mjs';
 import {ListAccountHandler} from './infrastructure/handlers/ListAccountHandler.mjs';
 import {LoginAccountHandler} from './infrastructure/handlers/LoginAccountHandler.mjs';

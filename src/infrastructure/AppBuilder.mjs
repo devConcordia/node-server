@@ -1,8 +1,8 @@
-import {Logger} from '../core/logger/Logger.mjs';
-import {ConsoleTransport} from '../core/logger/ConsoleTransport.mjs';
-import {FileTransport} from '../core/logger/FileTransport.mjs';
+import {Logger} from '../core/logging/Logger.mjs';
+import {ConsoleTransport} from '../core/logging/ConsoleTransport.mjs';
+import {FileTransport} from '../core/logging/FileTransport.mjs';
 import {Builder} from '../core/Builder.mjs';
-import {Router} from '../core/http/Router.mjs';
+import {Router} from '../core/network/Router.mjs';
 import {Authenticator} from '../core/security/Authenticator.mjs';
 import {AppSettings} from './AppSettings.mjs';
 import {MainDatabaseExecutor} from './database/MainDatabaseExecutor.mjs';
@@ -24,7 +24,7 @@ export class AppBuilder extends Builder {
 
 		const container = app.getContainer();
 
-		container.singleton(AppSettings, function (ctx) {
+		container.singleton(AppSettings, function () {
 			return new AppSettings().load();
 		});
 
@@ -67,11 +67,11 @@ export class AppBuilder extends Builder {
 		});
 
 		///
-		container.singleton(Router, function (ctx) {
+		container.singleton(Router, function () {
 			return new Router();
 		});
 
-		container.singleton(Authenticator, function (ctx) {
+		container.singleton(Authenticator, function () {
 			return new Authenticator();
 		});
 

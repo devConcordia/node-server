@@ -1,4 +1,4 @@
-import {Time} from '../common/Time.mjs';
+import {Time} from '../time/Time.mjs';
 
 /** Logger
  *

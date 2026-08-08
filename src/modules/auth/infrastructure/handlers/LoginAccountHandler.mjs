@@ -1,4 +1,4 @@
-import {Handler} from '../../../../core/http/Handler.mjs';
+import {Handler} from '../../../../core/network/Handler.mjs';
 import {BasicAuthentication} from '../../../../infrastructure/security/authentications/BasicAuthentication.mjs';
 
 /** LoginAccountHandler

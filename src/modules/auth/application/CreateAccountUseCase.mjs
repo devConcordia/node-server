@@ -1,6 +1,6 @@
 import {Password} from '../../../infrastructure/security/Password.mjs';
 import {Account} from '../domain/Account.mjs';
-import {Assert} from '../../../core/common/Assert.mjs';
+import {Assert} from '../../../core/assertion/Assert.mjs';
 
 /** CreateAccountUseCase
  *

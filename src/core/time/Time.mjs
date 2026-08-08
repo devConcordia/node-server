@@ -58,7 +58,7 @@ export class Time {
 	 */
 	static getTime(date = new Date()) {
 
-		return date.getHours() + '-' + padding(date.getMinutes()) + '-' + padding(date.getSeconds())
+		return date.getHours() + ':' + padding(date.getMinutes()) + ':' + padding(date.getSeconds())
 
 	}
 

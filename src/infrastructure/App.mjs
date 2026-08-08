@@ -1,6 +1,6 @@
 ///
 import {Application} from '../core/Application.mjs';
-import {Router} from '../core/http/Router.mjs';
+import {Router} from '../core/network/Router.mjs';
 ///
 import {MainRestServer} from './rest/MainRestServer.mjs';
 

@@ -1,5 +1,5 @@
-import {Server} from '../../core/http/Server.mjs';
-import {Router} from '../../core/http/Router.mjs';
+import {Server} from '../../core/network/Server.mjs';
+import {Router} from '../../core/network/Router.mjs';
 import {Authenticator} from '../../core/security/Authenticator.mjs';
 
 /** MainRestServer

@@ -1,4 +1,4 @@
-import {Handler} from '../../../../core/http/Handler.mjs';
+import {Handler} from '../../../../core/network/Handler.mjs';
 import {JWTAuthentication} from '../../../../infrastructure/security/authentications/JWTAuthentication.mjs';
 
 /** UpdateAccountHandler
