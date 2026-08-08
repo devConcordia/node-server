@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {EventStream} from './EventStream.mjs';
 
 /** ResponseContext
  *
@@ -8,6 +9,19 @@ export class ResponseContext {
 	constructor(response) {
 
 		this.response = response;
+
+	}
+
+	setHeaders(headers = {}) {
+
+		for (const name in headers)
+			this.response.setHeader(name, headers[name]);
+
+	}
+
+	createEventStream(headers = {}) {
+
+		return new EventStream(this.response, headers);
 
 	}
 

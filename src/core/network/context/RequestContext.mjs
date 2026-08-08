@@ -14,6 +14,7 @@ export class RequestContext {
 	constructor(request, url, body) {
 
 		this.request = request;
+
 		this.url = url;
 		this.body = body;
 		this.params = Object.create(null);
@@ -21,6 +22,28 @@ export class RequestContext {
 
 	}
 
+	/**
+	 *
+	 * @param {Function} handler
+	 */
+	onClose(handler) {
+
+		let closed = false;
+
+		function closeHandler() {
+			if (!closed) {
+				closed = true;
+				handler();
+			}
+		}
+
+		this.request.socket.once('close', closeHandler);
+		this.request.socket.once('end', closeHandler);
+
+		this.request.once('close', closeHandler);
+		this.request.once('aborted', closeHandler);
+
+	}
 
 	/** setCurrentAccount
 	 *
