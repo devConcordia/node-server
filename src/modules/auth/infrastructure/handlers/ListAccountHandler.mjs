@@ -6,15 +6,15 @@ import {JWTAuthentication} from '../../../../infrastructure/security/authenticat
  */
 export class ListAccountHandler extends Handler {
 
-	get METHOD() {
+	static get METHOD() {
 		return 'GET';
 	}
 
-	get ROUTE() {
+	static get ROUTE() {
 		return '/api/accounts';
 	}
 
-	get AUTH() {
+	static get AUTH() {
 		return [JWTAuthentication];
 	}
 

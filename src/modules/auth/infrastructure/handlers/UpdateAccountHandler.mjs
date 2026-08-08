@@ -6,16 +6,16 @@ import {JWTAuthentication} from '../../../../infrastructure/security/authenticat
  */
 export class UpdateAccountHandler extends Handler {
 
-	get METHOD() {
+	static get METHOD() {
 
 		return 'PUT';
 	}
 
-	get ROUTE() {
+	static get ROUTE() {
 		return '/api/accounts/:accountId';
 	}
 
-	get AUTH() {
+	static get AUTH() {
 		return [JWTAuthentication];
 	}
 

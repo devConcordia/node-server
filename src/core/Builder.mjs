@@ -1,38 +1,27 @@
-/** Application
+/**
  *
  */
 export class Builder {
 
-	/** buildRepositories
+	/**
 	 *
-	 * @param {Application} app
+	 *@param {Application} application
 	 */
-	buildRepositories(app) {
+	async create(application) {
 
-		if (this.onBuildRepositories instanceof Function)
-			this.onBuildRepositories(app);
+		if (this.onCreate instanceof Function)
+			await this.onCreate(application);
 
 	}
 
-	/** buildServices
+	/**
 	 *
-	 * @param {Application} app
+	 * @param {Application} application
 	 */
-	buildServices(app) {
+	async start(application) {
 
-		if (this.onBuildServices instanceof Function)
-			this.onBuildServices(app);
-
-	}
-
-	/** buildHandlers
-	 *
-	 * @param {Application} app
-	 */
-	buildHandlers(app) {
-
-		if (this.onBuildHandlers instanceof Function)
-			this.onBuildHandlers(app);
+		if (this.onStart instanceof Function)
+			await this.onStart(application);
 
 	}
 

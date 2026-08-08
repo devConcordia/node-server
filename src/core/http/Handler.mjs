@@ -3,20 +3,20 @@
  */
 export class Handler {
 
-	get METHOD() {
+	static get METHOD() {
 
 		throw new Error(`${this.constructor.name}.METHOD not defined`);
 
 	}
 
-	get ROUTE() {
+	static get ROUTE() {
 
 		throw new Error(`${this.constructor.name}.ROUTE not defined`);
 
 	}
 
-	/// authentications
-	get AUTH() {
+	/// @type {Authentication}
+	static get AUTH() {
 
 		return [];
 

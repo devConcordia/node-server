@@ -2,28 +2,18 @@ import {App} from './infrastructure/App.mjs';
 import {AppBuilder} from './infrastructure/AppBuilder.mjs';
 import {AuthBuilder} from './modules/auth/AuthBuilder.mjs';
 
-/**
- *
- * @returns {Promise<void>}
- */
-async function main() {
+try {
 
 	const app = new App();
 
+	app.append(new AppBuilder());
+	app.append(new AuthBuilder());
+
 	await app.create();
-
-	///
-	app.registry(new AppBuilder());
-
-	///
-	app.registry(new AuthBuilder());
-
-	///
-	await app.build();
-
-	///
 	await app.start();
 
-}
+} catch (error) {
 
-main().catch(console.error);
+	console.error(error);
+
+}

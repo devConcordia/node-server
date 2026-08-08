@@ -5,40 +5,26 @@ import {Authentication} from './Authentication.mjs';
  */
 export class Authenticator {
 
-	#authentications = new Map();
-
-	/** registry
-	 *
-	 * @param {Authentication} authentication
-	 */
-	registry(authentication) {
-
-		if (!(authentication instanceof Authentication))
-			throw new Error(`Authenticator.registry: @param '${authentication}' is not an instance of Authentication`);
-
-		this.#authentications.set(authentication.constructor, authentication);
-
-	}
-
 	/** authenticate
 	 *
-	 * @param {Handler} controller
+	 * @param {Context} context
+	 * @param {Handler} handler
 	 * @param {RequestContext} requestContext
 	 * @return {Boolean}
 	 */
-	authenticate(controller, requestContext) {
+	authenticate(context, handler, requestContext) {
 
-		const allowedList = controller.AUTH ?? [];
+		const allowedList = handler.AUTH ?? [];
 
 		if (allowedList.length === 0)
 			return true;
 
-		for (const authClass of allowedList) {
+		for (const type of allowedList) {
 
-			if (!this.#authentications.has(authClass))
-				throw new Error(`Authenticator.authenticate: '${authClass.name}' not registered`);
+			const authenticator = context.get(type);
 
-			const authenticator = this.#authentications.get(authClass);
+			if (!(authenticator instanceof Authentication))
+				throw new Error(`Authenticator.authenticate: '${type.name}' not registered`);
 
 			if (authenticator.fromRequest(requestContext))
 				return true;

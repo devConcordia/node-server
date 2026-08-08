@@ -45,18 +45,22 @@ export class MainRestServer extends Server {
 
 	/**
 	 *
+	 * @param {Context} context
 	 * @param {AppSettings} settings
 	 * @param {Router} router
 	 * @param {Authenticator} authenticator
 	 */
-	constructor(settings, router, authenticator) {
+	constructor(context, settings, router, authenticator) {
+
 		super();
-		this.router = router;
-		this.authenticator = authenticator;
 
 		this.#baseUrl = settings.BASE_URL;
 		this.#host = settings.SERVER_HOST;
 		this.#port = settings.SERVER_PORT;
+
+		this.context = context;
+		this.router = router;
+		this.authenticator = authenticator;
 
 	}
 
@@ -77,12 +81,16 @@ export class MainRestServer extends Server {
 
 		console.log('onRequest', `[${handler.constructor.name}]`, request.getPath())
 
-		if (!this.authenticator.authenticate(handler, request)) {
+		const scope = this.context.createScope();
+
+		if (!this.authenticator.authenticate(scope, handler, request)) {
 			response.replyError(403, 'Forbidden', 'Authentication required');
 			return;
 		}
 
-		await handler.resolve(request, response);
+		const instance = scope.get(handler);
+
+		await instance.resolve(request, response);
 
 	}
 
@@ -100,7 +108,7 @@ export class MainRestServer extends Server {
 
 		}
 
-		response.replyError(500, "Internal Server Error", "Internal Server Error");
+		response.replyError(500, "Internal Server Error", error.message);
 
 	}
 

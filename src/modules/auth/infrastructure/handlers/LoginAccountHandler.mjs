@@ -6,15 +6,15 @@ import {BasicAuthentication} from '../../../../infrastructure/security/authentic
  */
 export class LoginAccountHandler extends Handler {
 
-	get METHOD() {
+	static get METHOD() {
 		return 'POST';
 	}
 
-	get ROUTE() {
+	static get ROUTE() {
 		return '/api/accounts/login';
 	}
 
-	get AUTH() {
+	static get AUTH() {
 		return [BasicAuthentication];
 	}
 

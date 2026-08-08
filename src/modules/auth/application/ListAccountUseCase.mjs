@@ -20,7 +20,14 @@ export class ListAccountUseCase {
 	 */
 	execute() {
 
-		return this.accountRepository.find();
+		return this.accountRepository.find()
+			.map(function (e) {
+				return {
+					id: e.id,
+					name: e.name,
+					email: e.email
+				}
+			});
 
 	}
 

@@ -1,40 +1,68 @@
+import {Container} from './composition/Container.mjs';
+import {Resolver} from './composition/Resolver.mjs';
+import {Context} from './composition/Context.mjs';
+import {Builder} from './Builder.mjs';
+
 /** Application
  *
  */
 export class Application {
 
-	#builders = new Set();
-	#container = new Map();
+	#builders = [];
+
+	#container = null;
+	#resolver = null;
+	#context = null;
+
+	constructor() {
+
+		this.#container = new Container();
+		this.#resolver = new Resolver(this.#container);
+		this.#context = new Context(this.#resolver);
+
+	}
+
+	/**
+	 *
+	 * @return {null}
+	 */
+	getContainer() {
+
+		return this.#container;
+
+	}
+
+	/**
+	 *
+	 * @return {null}
+	 */
+	getContext() {
+
+		return this.#context;
+
+	}
 
 	/**
 	 *
 	 * @param {Builder} builder
 	 */
-	registry(builder) {
+	append(builder) {
 
-		this.#builders.add(builder);
+		if (!(builder instanceof Builder))
+			throw new Error(`${this.constructor.name}.append: '${builder.constructor.name}' is not a builder`);
 
-	}
-
-	set(instance) {
-
-		if (this.#container.has(instance.constructor))
-			throw new Error(`${this.constructor.name}.set: '${instance.constructor.name}' has been registered`);
-
-		this.#container.set(instance.constructor, instance);
+		this.#builders.push(builder);
 
 	}
 
-	get(classObject) {
-
-		if (!this.#container.has(classObject))
-			throw new Error(`${this.constructor.name}.get: '${classObject.name}' not initialized`);
-
-		return this.#container.get(classObject);
-
-	}
-
+	/**
+	 *
+	 * @return {Promise<Application>}
+	 */
 	async create() {
+
+		for (const builder of this.#builders)
+			await builder.create(this);
 
 		if (this.onCreate instanceof Function)
 			await this.onCreate();
@@ -43,22 +71,14 @@ export class Application {
 
 	}
 
-	async build() {
-
-		for (let m of this.#builders)
-			await m.buildRepositories(this);
-
-		for (let m of this.#builders)
-			await m.buildServices(this);
-
-		for (let m of this.#builders)
-			await m.buildHandlers(this);
-
-		return this;
-
-	}
-
+	/**
+	 *
+	 * @return {Promise<Application>}
+	 */
 	async start() {
+
+		for (const builder of this.#builders)
+			await builder.start(this);
 
 		if (this.onStart instanceof Function)
 			await this.onStart();

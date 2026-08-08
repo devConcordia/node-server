@@ -32,7 +32,7 @@ export class Router {
 
 	/** registry
 	 *
-	 * @param {Handler} handler
+	 * @param {*} handler
 	 */
 	registry(handler) {
 
