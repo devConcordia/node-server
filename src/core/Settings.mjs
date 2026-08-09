@@ -1,4 +1,5 @@
 import process from 'node:process';
+import {Parser} from './parsing/Parser.mjs';
 
 /** Settings
  *
@@ -7,21 +8,27 @@ export class Settings {
 
 	/** load
 	 *
+	 *	Read .evn variables of properties with undefined values.
+	 *
 	 */
 	load() {
 
-		for (let key in this) {
+		const keys = Object.keys(this);
 
-			if (this[key] !== null) continue;
+		for (const key of keys) {
+
+			if (this[key] !== undefined) continue;
 
 			const value = process.env[key];
 
 			if (value === undefined)
 				throw new Error(`${this.constructor.name}.load: missing '${key}'`);
 
-			this[key] = value;
+			this[key] = Parser.parse(value);
 
 		}
+
+		Object.freeze(this);
 
 		return this;
 

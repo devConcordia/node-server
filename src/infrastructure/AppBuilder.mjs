@@ -25,7 +25,7 @@ export class AppBuilder extends Builder {
 		const container = app.getContainer();
 
 		container.singleton(AppSettings, function () {
-			return new AppSettings().load();
+			return new AppSettings();
 		});
 
 		///

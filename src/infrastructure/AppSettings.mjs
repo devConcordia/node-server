@@ -2,15 +2,22 @@ import {Settings} from '../core/Settings.mjs';
 
 export class AppSettings extends Settings {
 
-	SERVER_HOST = null;
-	SERVER_PORT = null;
-	BASE_URL = null;
+	DEBUG = undefined;
 
-	JWT_SECRET = null;
-	JWT_ALGORITHM = null;
+	SERVER_HOST = undefined;
+	SERVER_PORT = undefined;
+	BASE_URL = undefined;
 
-	DB_MAIN_PATH = null;
+	JWT_SECRET = undefined;
+	JWT_ALGORITHM = undefined;
 
-	LOG_PATH = null;
+	DB_MAIN_PATH = undefined;
+
+	LOG_PATH = undefined;
+
+	constructor() {
+		super();
+		this.load();
+	}
 
 }
