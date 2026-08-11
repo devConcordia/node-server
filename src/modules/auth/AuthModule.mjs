@@ -1,4 +1,4 @@
-import {Builder} from '../../core/Builder.mjs';
+import {Module} from '../../core/Module.mjs';
 import {Router} from '../../core/network/Router.mjs';
 import {CreateAccountHandler} from './infrastructure/handlers/CreateAccountHandler.mjs';
 import {ListAccountHandler} from './infrastructure/handlers/ListAccountHandler.mjs';
@@ -16,13 +16,32 @@ import {Authorize} from '../../infrastructure/security/Authorize.mjs';
 /**
  *
  */
-export class AuthBuilder extends Builder {
+export class AuthModule extends Module {
 
-	onCreate(app) {
+	onSetup(app) {
 
 		const container = app.getContainer();
 
-		///
+		this.addRepositories(container);
+		this.addUseCases(container);
+		this.addHandlers(container);
+
+	}
+
+	onAfterSetup(app) {
+
+		const context = app.getContext();
+
+		const router = context.get(Router);
+
+		router.enable(CreateAccountHandler);
+		router.enable(ListAccountHandler);
+		router.enable(LoginAccountHandler);
+
+	}
+
+	addRepositories(container) {
+
 		container.scoped(AccountRepository, function (ctx) {
 			return new AccountRepository(ctx.get(MainDatabaseExecutor))
 		});
@@ -35,7 +54,10 @@ export class AuthBuilder extends Builder {
 			return new PermissionRepository(ctx.get(MainDatabaseExecutor))
 		});
 
-		///
+	}
+
+	addUseCases(container) {
+
 		container.scoped(CreateAccountUseCase, function (ctx) {
 			return new CreateAccountUseCase(ctx.get(AccountRepository))
 		});
@@ -48,7 +70,10 @@ export class AuthBuilder extends Builder {
 			return new LoginAccountUseCase(ctx.get(JsonWebToken))
 		});
 
-		///
+	}
+
+	addHandlers(container) {
+
 		container.transient(CreateAccountHandler, function (ctx) {
 			return new CreateAccountHandler(ctx.get(CreateAccountUseCase))
 		});
@@ -63,18 +88,7 @@ export class AuthBuilder extends Builder {
 		container.transient(LoginAccountHandler, function (ctx) {
 			return new LoginAccountHandler(ctx.get(LoginAccountUseCase))
 		});
-	}
 
-	onStart(app) {
-
-		const context = app.getContext();
-
-		///
-		const router = context.get(Router);
-
-		router.registry(CreateAccountHandler);
-		router.registry(ListAccountHandler);
-		router.registry(LoginAccountHandler);
 	}
 
 }

@@ -1,13 +1,13 @@
-import {Builder} from '../../core/Builder.mjs';
+import {Module} from '../../core/Module.mjs';
 import {Router} from '../../core/network/Router.mjs';
 import {MetricsHandler} from './infrastructure/handlers/MetricsHandler.mjs';
 
 /**
  *
  */
-export class AdminBuilder extends Builder {
+export class AdminModule extends Module {
 
-	onCreate(app) {
+	onSetup(app) {
 
 		const container = app.getContainer();
 
@@ -17,14 +17,13 @@ export class AdminBuilder extends Builder {
 
 	}
 
-	onStart(app) {
+	onAfterSetup(app) {
 
 		const context = app.getContext();
 
-		///
 		const router = context.get(Router);
 
-		router.registry(MetricsHandler);
+		router.enable(MetricsHandler);
 
 	}
 }

@@ -1,15 +1,13 @@
 import {App} from './infrastructure/App.mjs';
-import {AppBuilder} from './infrastructure/AppBuilder.mjs';
-import {AuthBuilder} from './modules/auth/AuthBuilder.mjs';
-import {AdminBuilder} from './modules/admin/AdminBuilder.mjs';
+import {AuthModule} from './modules/auth/AuthModule.mjs';
+import {AdminModule} from './modules/admin/AdminModule.mjs';
 
 try {
 
 	const app = new App();
 
-	app.append(new AppBuilder());
-	app.append(new AuthBuilder());
-	app.append(new AdminBuilder());
+	app.use(new AuthModule());
+	app.use(new AdminModule());
 
 	await app.create();
 	await app.start();

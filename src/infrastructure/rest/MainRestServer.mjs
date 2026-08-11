@@ -79,8 +79,6 @@ export class MainRestServer extends Server {
 			return;
 		}
 
-		console.log('onRequest', `[${handler.constructor.name}]`, request.getPath())
-
 		const scope = this.context.createScope();
 
 		if (!this.authenticator.authenticate(scope, handler, request)) {

@@ -1,27 +1,4 @@
-/** calculatePriority
- *
- * @param {String} path
- */
-function calculatePriority(path) {
-
-	let score = 0;
-
-	const parts = path.split("/");
-
-	for (const part of parts) {
-
-		if (part === "*")
-			score += 1;
-		else if (part.startsWith(":"))
-			score += 10;
-		else
-			score += 100;
-
-	}
-
-	return score;
-
-}
+import {Route} from './Route.mjs';
 
 /** Router
  *
@@ -30,34 +7,18 @@ export class Router {
 
 	#routes = Object.create(null);
 
-	/** registry
+	/** enable
 	 *
 	 * @param {*} handler
 	 */
-	registry(handler) {
+	enable(handler) {
 
 		const method = handler.METHOD.toUpperCase();
-
-		console.log('Router.registry:', method, handler.ROUTE);
-
-		const parameters = [];
-
-		const regexPath = handler.ROUTE
-			.replace(/\*/g, "(.*)")
-			.replace(/:([^/]+)/g, function (match, replace) {
-				parameters.push(replace);
-				return "([^/]+)";
-			});
 
 		if (!(method in this.#routes))
 			this.#routes[method] = [];
 
-		this.#routes[method].push({
-			regex: new RegExp(`^${regexPath}$`),
-			parameters,
-			handler,
-			priority: calculatePriority(handler.ROUTE)
-		});
+		this.#routes[method].push(new Route(handler));
 
 	}
 
@@ -88,17 +49,12 @@ export class Router {
 
 		for (const route of routes) {
 
-			const match = pathname.match(route.regex);
+			const match = route.match(pathname);
 
 			if (!match)
 				continue;
 
-			const params = Object.create(null);
-
-			for (const index in route.parameters) {
-				const name = route.parameters[index];
-				params[name] = match[index + 1];
-			}
+			const params = route.getParameters(match);
 
 			request.setParams(params);
 
