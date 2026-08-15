@@ -30,7 +30,7 @@ export class CreateAccountUseCase {
 
 		const account = new Account(input);
 
-		Assert.isNonNull('Account.id', account.id);
+		Assert.require('Account.id', account.id, Number);
 
 		return this.accountRepository.create(account);
 

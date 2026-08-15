@@ -1,3 +1,5 @@
+import {Assert} from '../../../core/assertion/Assert.mjs';
+
 /** UpdateAccountUseCase
  *
  */
@@ -24,7 +26,7 @@ export class UpdateAccountUseCase {
 		const account = new Account();
 		account.assign(input);
 
-		Assert.isNull('Account.id', account.id);
+		Assert.require('Account.id', account.id, Number);
 
 		this.accountRepository.update(account);
 

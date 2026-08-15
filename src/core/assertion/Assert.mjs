@@ -3,109 +3,62 @@
  */
 export class Assert {
 
-	static NUMBER = 'number';
-	static STRING = 'string';
-	static BOOLEAN = 'boolean';
-	static OBJECT = 'object';
+	/**
+	 *
+	 * @param {String} name
+	 * @param {*} value
+	 * @param {*} type
+	 */
+	static require(name, value, type) {
 
-	/** isNull
+		switch (type) {
+			case Number:
+				if (typeof value !== 'number' || Number.isNaN(value))
+					throw new TypeError(`${name} must be a number`);
+				break;
+
+			case String:
+				if (typeof value !== 'string')
+					throw new TypeError(`${name} must be a string`);
+				break;
+
+			case Boolean:
+				if (typeof value !== 'boolean')
+					throw new TypeError(`${name} must be a boolean`);
+				break;
+
+			default:
+				if (!(value instanceof type))
+					throw new TypeError(`${name} must be an instance of ${type.name}`);
+				break;
+		}
+
+	}
+
+	/**
 	 *
 	 * @param {String} name
 	 * @param {*} value
 	 */
-	static isNull(name, value) {
+	static ensureArray(name, value) {
 
-		if (value === null)
-			throw TypeError(`${name} is null`);
-
-	}
-
-	/** isNonNull
-	 *
-	 * @param {String} name
-	 * @param {*} value
-	 */
-	static isNonNull(name, value) {
-
-		if (value !== null)
-			throw TypeError(`${name} is non null`);
+		if (!Array.isArray(value))
+			throw new TypeError(`${name} must be an array`);
 
 	}
 
-	/** isBoolean
-	 *
-	 * @param {String} name
-	 * @param {*} value
-	 */
-	static isBoolean(name, value) {
-
-		if (typeof value !== Assert.BOOLEAN)
-			throw TypeError(`${name} is not Boolean`);
-
-	}
-
-	/** isNumber
-	 *
-	 * @param {String} name
-	 * @param {*} value
-	 */
-	static isNumber(name, value) {
-
-        if (typeof value !== Assert.NUMBER || Number.isNaN(value))
-            throw new TypeError(`${name} must be a valid Number`);
-
-	}
-
-	/** isString
-	 *
-	 * @param {String} name
-	 * @param {*} value
-	 */
-	static isString(name, value) {
-
-		if (typeof value !== Assert.STRING)
-			throw TypeError(`${name} must be a String`);
-
-	}
-
-	/** isDate
-	 *
-	 * @param {String} name
-	 * @param value
-	 */
-	static isDate(name, value) {
-
-        if (!(value instanceof Date) || Number.isNaN(value.getTime()))
-            throw new TypeError(`${name} must be a valid Date`);
-
-	}
-
-	/** isObject
-	 *
-	 * @param {String} name
-	 * @param {*} value
-	 */
-	static isObject(name, value) {
-
-		if (typeof value !== Assert.OBJECT)
-			throw TypeError(`${name} must be a Object`);
-
-	}
-
-	/** isArray
+	/** ensureArrayOf
 	 *
 	 * @param {String} name
 	 * @param {String} type
 	 * @param {*} value
 	 */
-	static isArray(name, type, value) {
+	static ensureArrayOf(name, value, type) {
 
-		if (!Array.isArray(value))
-			throw TypeError(`${name} must be a Array`);
+		Assert.ensureArray(name, value);
 
 		for (const e of value)
-			if (!(typeof e !== type))
-				throw TypeError(`${name} must be a Array of ${type}`);
+			Assert.require(`${name} element`, e, type);
 
 	}
 
