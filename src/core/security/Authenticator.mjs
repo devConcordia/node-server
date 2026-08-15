@@ -8,11 +8,11 @@ export class Authenticator {
 	/** authenticate
 	 *
 	 * @param {Context} context
-	 * @param {Handler} handler
+	 * @param {typeof Handler} handler
 	 * @param {RequestContext} requestContext
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	authenticate(context, handler, requestContext) {
+	async authenticate(context, handler, requestContext) {
 
 		const allowedList = handler.AUTH ?? [];
 
@@ -26,7 +26,7 @@ export class Authenticator {
 			if (!(authenticator instanceof Authentication))
 				throw new Error(`Authenticator.authenticate: '${type.name}' not registered`);
 
-			if (authenticator.fromRequest(requestContext))
+			if (await authenticator.fromRequest(requestContext))
 				return true;
 
 		}

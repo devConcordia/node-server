@@ -6,26 +6,44 @@ import {ResponseContext} from './context/ResponseContext.mjs';
 
 export class Server {
 
+	/**
+	 * @returns {string}
+	 */
 	get BASE_URL() {
 		throw new Error(this.constructor.name + '.BASE_URL is undefined');
 	};
 
+	/**
+	 * @returns {string}
+	 */
 	get HOST() {
 		throw new Error(this.constructor.name + '.HOST is undefined');
 	};
 
+	/**
+	 * @returns {string}
+	 */
 	get PORT() {
 		throw new Error(this.constructor.name + '.PORT is undefined');
 	};
 
+	/**
+	 * @returns {string|null}
+	 */
 	get CERTIFICATE() {
 		return null;
 	}
 
+	/**
+	 * @returns {string|null}
+	 */
 	get PRIVATE_KEY() {
 		return null;
 	}
 
+	/**
+	 * @return {Array}
+	 */
 	get ORIGINS() {
 		return [];
 	}
@@ -41,7 +59,6 @@ export class Server {
 	 * 	'Access-Control-Allow-Credentials': true
 	 *
 	 * @return {Object}
-	 * @constructor
 	 */
 	get HEADERS() {
 		return {
@@ -49,6 +66,13 @@ export class Server {
 			'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 			'Access-Control-Max-Age': 86400
 		};
+	}
+
+	/**
+	 *
+	 */
+	onStart() {
+
 	}
 
 	/**
@@ -66,11 +90,11 @@ export class Server {
 	 *
 	 * @param requestContext
 	 * @param responseContext
-	 * @param errorContext
+	 * @param error
 	 */
-	async onError(requestContext, responseContext, errorContext) {
+	async onError(requestContext, responseContext, error) {
 
-		responseContext.replyError(500, "Internal Server Error", "Internal Server Error");
+		responseContext.replyError(500, "Internal Server Error", 'An internal error occurred');
 
 	}
 
@@ -141,6 +165,8 @@ export class Server {
 		});
 
 		server.listen(this.PORT, this.HOST);
+
+		this.onStart();
 
 	}
 

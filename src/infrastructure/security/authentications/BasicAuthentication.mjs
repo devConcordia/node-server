@@ -1,5 +1,20 @@
 import {Authentication} from '../../../core/security/Authentication.mjs';
-import {Password} from '../Password.mjs';
+
+/**
+ *
+ * @param {string} input
+ * @return {string[]|null}
+ */
+function getCredentials(input) {
+
+	const i = input.indexOf(':');
+
+	if (i <= 0)
+		return null;
+
+	return [input.substring(0, i), input.substring(i + 1)];
+
+}
 
 /** BasicAuthentication
  *
@@ -8,35 +23,50 @@ export class BasicAuthentication extends Authentication {
 
 	/**
 	 *
+	 * @param {PasswordHasher} passwordHasher
 	 * @param {AccountRepository} accountRepository
 	 */
-	constructor(accountRepository) {
+	constructor(passwordHasher, accountRepository) {
 		super();
+		this.passwordHasher = passwordHasher;
 		this.accountRepository = accountRepository;
 	}
 
 	/** fromRequest
 	 *
+	 * Authenticate the request using HTTP Basic Authentication.
+	 *
 	 * @param {RequestContext} request
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	fromRequest(request) {
+	async fromRequest(request) {
 
-		const [email, password] = request.getBasicAuthorization().split(/:/);
+		const authorization = request.getBasicAuthorization();
+
+		if (!authorization)
+			return false;
+
+		const credentials = getCredentials(authorization);
+
+		if (!credentials)
+			return false;
+
+		const [email, password] = credentials;
 
 		const account = this.accountRepository.findOneByEmail(email);
 
-		if (account && Password.verify(account.password_hash, password)) {
+		if (!account)
+			return false;
 
-			request.setCurrentAccount(account);
+		const validated = await this.passwordHasher.verify(password, account.getPasswordHash());
 
-			return true;
+		if (!validated)
+			return false;
 
-		}
+		request.setCurrentAccount(account);
 
-		return false;
+		return true;
 
 	}
 
 }
-

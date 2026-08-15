@@ -1,6 +1,5 @@
 import {Server} from '../../core/network/Server.mjs';
 import {Router} from '../../core/network/Router.mjs';
-import {Authenticator} from '../../core/security/Authenticator.mjs';
 
 /** MainRestServer
  *
@@ -11,34 +10,18 @@ export class MainRestServer extends Server {
 	#host = null;
 	#port = null;
 
-	/**
-	 *
-	 * @returns {String}
-	 */
 	get BASE_URL() {
 		return this.#baseUrl;
 	}
 
-	/**
-	 *
-	 * @returns {String}
-	 */
 	get HOST() {
 		return this.#host;
 	}
 
-	/**
-	 *
-	 * @returns {String}
-	 */
 	get PORT() {
 		return this.#port;
 	}
 
-	/**
-	 *
-	 * @return {Array}
-	 */
 	get ORIGINS() {
 		return [this.#baseUrl];
 	}
@@ -47,10 +30,11 @@ export class MainRestServer extends Server {
 	 *
 	 * @param {Context} context
 	 * @param {AppSettings} settings
+	 * @param {Logger} logger
 	 * @param {Router} router
 	 * @param {Authenticator} authenticator
 	 */
-	constructor(context, settings, router, authenticator) {
+	constructor(context, settings, logger, router, authenticator) {
 
 		super();
 
@@ -59,8 +43,18 @@ export class MainRestServer extends Server {
 		this.#port = settings.SERVER_PORT;
 
 		this.context = context;
+		this.logger = logger;
 		this.router = router;
 		this.authenticator = authenticator;
+
+	}
+
+	/**
+	 *
+	 */
+	onStart() {
+
+		this.logger.info(`MainRestServer.onStart: started on ${this.HOST}:${this.PORT}`);
 
 	}
 
@@ -75,38 +69,46 @@ export class MainRestServer extends Server {
 		const handler = this.router.getHandler(request);
 
 		if (handler == null) {
+			this.logger.debug(`MainRestServer.onRequest: ${request.getMethod()} '${request.getPath()}' reply 404`);
 			response.replyError(404, 'Not Found', 'Page not found');
 			return;
 		}
 
 		const scope = this.context.createScope();
 
-		if (!this.authenticator.authenticate(scope, handler, request)) {
-			response.replyError(403, 'Forbidden', 'Authentication required');
+		const authenticated = await this.authenticator.authenticate(scope, handler, request);
+
+		if (!authenticated) {
+			this.logger.debug(`MainRestServer.onRequest: ${request.getMethod()} ${request.getPath()} reply 401 (${handler.name})`);
+			response.replyError(401, 'Unauthorized', 'Authentication required');
 			return;
 		}
 
 		const instance = scope.get(handler);
 
+		if (!instance.isAuthorized(request)) {
+			this.logger.debug(`MainRestServer.onRequest: ${request.getMethod()} ${request.getPath()} reply 403 (${handler.name})`);
+			response.replyError(403, 'Forbidden', 'Access denied');
+			return;
+		}
+
+		this.logger.debug(`MainRestServer.onRequest: ${request.getMethod()} '${request.getPath()}' (${handler.name})`);
+
 		await instance.resolve(request, response);
 
 	}
 
+	/**
+	 *
+	 * @param {RequestContext} request
+	 * @param {ResponseContext} response
+	 * @param {Error} error
+	 */
 	async onError(request, response, error) {
 
-		const match = error.stack.match(/\((.*):(\d+):(\d+)\)/);
+		this.logger.error(`MainRestServer.onError: ${request.getMethod()} ${request.getPath()} reply 500 message='${error.message}'`);
 
-		if (match) {
-
-			console.log('[' + match[1] + ':' + match[2] + ']: ' + error.message);
-
-		} else {
-
-			console.error('Internal Server Error: ', error);
-
-		}
-
-		response.replyError(500, "Internal Server Error", error.message);
+		response.replyError(500, "Internal Server Error", 'An internal error occurred');
 
 	}
 

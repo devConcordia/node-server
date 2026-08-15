@@ -1,4 +1,3 @@
-///
 import {Application} from '../core/Application.mjs';
 import {Authenticator} from '../core/security/Authenticator.mjs';
 import {Router} from '../core/network/Router.mjs';
@@ -8,15 +7,14 @@ import {FileTransport} from '../core/logging/FileTransport.mjs';
 ///
 import {AppSettings} from './AppSettings.mjs';
 import {MainDatabaseExecutor} from './database/MainDatabaseExecutor.mjs';
+import {MainRestServer} from './rest/MainRestServer.mjs';
+import {PasswordHasher} from './security/PasswordHasher.mjs';
 import {JsonWebToken} from './security/JsonWebToken.mjs';
 import {Authorize} from './security/Authorize.mjs';
 import {BasicAuthentication} from './security/authentications/BasicAuthentication.mjs';
 import {JWTAuthentication} from './security/authentications/JWTAuthentication.mjs';
-import {MainRestServer} from './rest/MainRestServer.mjs';
 ///
 import {AccountRepository} from '../modules/auth/infrastructure/repositories/AccountRepository.mjs';
-import {RoleRepository} from '../modules/auth/infrastructure/repositories/RoleRepository.mjs';
-import {PermissionRepository} from '../modules/auth/infrastructure/repositories/PermissionRepository.mjs';
 
 /** App
  *
@@ -59,6 +57,7 @@ export class App extends Application {
 			///
 			const consoleTransport = new ConsoleTransport();
 
+			consoleTransport.enable(Logger.DEBUG);
 			consoleTransport.enable(Logger.INFO);
 			consoleTransport.enable(Logger.WARN);
 			consoleTransport.enable(Logger.ERROR);
@@ -94,6 +93,10 @@ export class App extends Application {
 
 		const container = this.getContainer();
 
+		container.singleton(PasswordHasher, function () {
+			return new PasswordHasher();
+		});
+
 		container.singleton(JsonWebToken, function (ctx) {
 			const settings = ctx.get(AppSettings);
 			return new JsonWebToken(settings.JWT_SECRET, settings.JWT_ALGORITHM);
@@ -102,15 +105,14 @@ export class App extends Application {
 		///
 		container.singleton(Authorize, function (ctx) {
 			return new Authorize(
-				ctx.get(AccountRepository),
-				ctx.get(RoleRepository),
-				ctx.get(PermissionRepository)
+				ctx.get(AccountRepository)
 			);
 		});
 
 		///
 		container.singleton(BasicAuthentication, function (ctx) {
 			return new BasicAuthentication(
+				ctx.get(PasswordHasher),
 				ctx.get(AccountRepository)
 			);
 		});
@@ -140,6 +142,7 @@ export class App extends Application {
 			return new MainRestServer(
 				ctx,
 				ctx.get(AppSettings),
+				ctx.get(Logger),
 				ctx.get(Router),
 				ctx.get(Authenticator)
 			);

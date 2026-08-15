@@ -5,6 +5,7 @@ import {Time} from '../time/Time.mjs';
  */
 export class Logger {
 
+	static DEBUG = 'DEBUG';
 	static INFO = 'INFO';
 	static WARN = 'WARN';
 	static ERROR = 'ERROR';
@@ -18,25 +19,28 @@ export class Logger {
 
 	}
 
+	debug(message) {
+		this.write(Logger.DEBUG, message);
+	}
+
 	info(message) {
-		this.#write(Logger.INFO, message);
+		this.write(Logger.INFO, message);
 	}
 
 	warn(message) {
-		this.#write(Logger.WARN, message);
+		this.write(Logger.WARN, message);
 	}
 
 	error(message) {
-		this.#write(Logger.ERROR, message);
+		this.write(Logger.ERROR, message);
 	}
 
-	#write(level, message) {
+	write(level, message) {
 
 		const timestamp = Time.getISO();
 
-		for (const transport of this.#transports) {
+		for (const transport of this.#transports)
 			transport.send(level, message, timestamp);
-		}
 
 	}
 

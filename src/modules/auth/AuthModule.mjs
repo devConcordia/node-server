@@ -12,6 +12,7 @@ import {ListAccountUseCase} from './application/ListAccountUseCase.mjs';
 import {LoginAccountUseCase} from './application/LoginAccountUseCase.mjs';
 import {JsonWebToken} from '../../infrastructure/security/JsonWebToken.mjs';
 import {Authorize} from '../../infrastructure/security/Authorize.mjs';
+import {PasswordHasher} from '../../infrastructure/security/PasswordHasher.mjs';
 
 /**
  *
@@ -59,7 +60,7 @@ export class AuthModule extends Module {
 	addUseCases(container) {
 
 		container.scoped(CreateAccountUseCase, function (ctx) {
-			return new CreateAccountUseCase(ctx.get(AccountRepository))
+			return new CreateAccountUseCase(ctx.get(PasswordHasher), ctx.get(AccountRepository))
 		});
 
 		container.scoped(ListAccountUseCase, function (ctx) {

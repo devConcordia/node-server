@@ -1,5 +1,5 @@
 import {MainDatabaseExecutor} from '../src/infrastructure/database/MainDatabaseExecutor.mjs';
-import {Password} from '../src/infrastructure/security/Password.mjs';
+import {PasswordHasher} from '../src/infrastructure/security/PasswordHasher.mjs';
 
 import {AppSettings} from '../src/infrastructure/AppSettings.mjs';
 
@@ -18,7 +18,7 @@ const accountRepository = new AccountRepository(mainDatabaseExecutor);
 const account = new Account({
 	name: 'master',
 	email: 'master@email.com',
-	password_hash: Password.hash("1234")
+	password_hash: PasswordHasher.hash("1234")
 });
 
 

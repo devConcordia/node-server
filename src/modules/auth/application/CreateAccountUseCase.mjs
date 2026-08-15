@@ -1,6 +1,4 @@
-import {Password} from '../../../infrastructure/security/Password.mjs';
 import {Account} from '../domain/Account.mjs';
-import {Assert} from '../../../core/assertion/Assert.mjs';
 
 /** CreateAccountUseCase
  *
@@ -13,9 +11,11 @@ export class CreateAccountUseCase {
 
 	/**
 	 *
+	 * @param {PasswordHasher} passwordHasher
 	 * @param {AccountRepository} accountRepository
 	 */
-	constructor(accountRepository) {
+	constructor(passwordHasher, accountRepository) {
+		this.passwordHasher = passwordHasher;
 		this.accountRepository = accountRepository;
 	}
 
@@ -25,12 +25,10 @@ export class CreateAccountUseCase {
 	 */
 	execute(input) {
 
-		input.password = Password.hash(input.password);
+		input.password = this.passwordHasher.hash(input.password);
 		input.created = new Date();
 
 		const account = new Account(input);
-
-		Assert.require('Account.id', account.id, Number);
 
 		return this.accountRepository.create(account);
 

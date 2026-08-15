@@ -9,7 +9,7 @@ export class Router {
 
 	/** enable
 	 *
-	 * @param {*} handler
+	 * @param {typeof Handler} handler
 	 */
 	enable(handler) {
 
@@ -24,6 +24,7 @@ export class Router {
 
 	/** orderBy
 	 *
+	 * @param {Function} sorter
 	 */
 	orderBy(sorter) {
 
@@ -38,7 +39,7 @@ export class Router {
 	/** getHandler
 	 *
 	 * @param {RequestContext} request
-	 * @returns {Handler|null}
+	 * @returns {typeof Handler|null}
 	 */
 	getHandler(request) {
 

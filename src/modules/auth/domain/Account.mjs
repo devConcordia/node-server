@@ -58,9 +58,9 @@ export class Account {
 
 	}
 
-	get password_hash() {
-		return this.#password_hash
-	}
+	// get password_hash() {
+	// 	return this.#password_hash
+	// }
 
 	set password_hash(value) {
 
@@ -103,15 +103,15 @@ export class Account {
 
 	}
 
-	verifyPassword(input) {
+	getPasswordHash() {
 
-		return this.#password_hash === input;
+		return this.#password_hash
 
 	}
 
 	toString() {
 
-		return `Account(${this.id}, ${this.name}, ${this.email})`;
+		return `Account(${this.id})`
 
 	}
 

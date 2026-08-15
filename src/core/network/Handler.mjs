@@ -3,19 +3,27 @@
  */
 export class Handler {
 
+	/**
+	 * @return {string}
+	 */
 	static get METHOD() {
 
 		throw new Error(`${this.constructor.name}.METHOD not defined`);
 
 	}
 
+	/**
+	 * @return {string}
+	 */
 	static get ROUTE() {
 
 		throw new Error(`${this.constructor.name}.ROUTE not defined`);
 
 	}
 
-	/// @type {Authentication}
+	/**
+	 * @return {typeof Authentication[]}
+	 */
 	static get AUTH() {
 
 		return [];
@@ -32,7 +40,7 @@ export class Handler {
 	/** isAuthorized
 	 *
 	 * @param {RequestContext} request
-	 * @return {Boolean}
+	 * @return {boolean}
 	 */
 	isAuthorized(request) {
 

@@ -4,7 +4,7 @@
 export class ListAccountUseCase {
 
 	get PERMISSION() {
-		return "account_find_all"
+		return "ACCOUNT_READ"
 	}
 
 	/**

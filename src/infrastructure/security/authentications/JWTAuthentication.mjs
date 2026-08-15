@@ -19,9 +19,9 @@ export class JWTAuthentication extends Authentication {
 	/** fromRequest
 	 *
 	 * @param {RequestContext} request
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	fromRequest(request) {
+	async fromRequest(request) {
 
 		const token = request.getBearerToken();
 
@@ -32,11 +32,8 @@ export class JWTAuthentication extends Authentication {
 			const account = this.accountRepository.findById(payload.sub);
 
 			if (account) {
-
 				request.setCurrentAccount(account);
-
 				return true;
-
 			}
 
 		}

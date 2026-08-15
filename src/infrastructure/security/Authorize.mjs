@@ -6,38 +6,32 @@ export class Authorize {
 	/**
 	 *
 	 * @param {AccountRepository} accountRepository
-	 * @param {RoleRepository} roleRepository
-	 * @param {PermissionRepository} permissionRepository
 	 */
-	constructor(accountRepository, roleRepository, permissionRepository) {
+	constructor(accountRepository) {
 		this.accountRepository = accountRepository;
-		this.roleRepository = roleRepository;
-		this.permissionRepository = permissionRepository;
 	}
 
 	/**
 	 *
-	 * @param account
-	 * @param role
+	 * @param {Account} account
+	 * @param {string} role
+	 * @return {boolean}
 	 */
 	isRole(account, role) {
 
-		/// TODO: Authorize.isRole
-		console.warn('Authorize.isRole: not implemented');
-		return false;
+		return this.accountRepository.hasPermission(account.id, role);
 
 	}
 
 	/**
 	 *
-	 * @param account
-	 * @param permission
+	 * @param {Account} account
+	 * @param {string} permission
+	 * @return {boolean}
 	 */
 	hasPermission(account, permission) {
 
-		/// TODO: Authorize.hasPermission
-		console.warn('Authorize.hasPermission: not implemented');
-		return true;
+		return this.accountRepository.hasPermission(account.id, permission);
 
 	}
 

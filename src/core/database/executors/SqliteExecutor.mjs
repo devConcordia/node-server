@@ -55,8 +55,6 @@ export class SqliteExecutor extends Executor {
 		if (tableName in this.#tables)
 			return this.#tables[tableName];
 
-		console.warn(`${this.constructor.name}.getTableInfo: '${tableName}' was loaded after init executor`);
-
 		return this.all(`PRAGMA table_info(${tableName});`);
 
 	}
@@ -70,8 +68,6 @@ export class SqliteExecutor extends Executor {
 	all(sql, params = {}) {
 
 		try {
-
-			console.log(`${this.constructor.name}.all(sql: ${sql})`, params);
 
 			if (Array.isArray(params))
 				return this.#db.prepare(sql).all(...params);
@@ -96,8 +92,6 @@ export class SqliteExecutor extends Executor {
 
 		try {
 
-			console.log(`${this.constructor.name}.one(sql: ${sql})`, params);
-
 			if (Array.isArray(params))
 				return this.#db.prepare(sql).get(...params);
 
@@ -120,8 +114,6 @@ export class SqliteExecutor extends Executor {
 	run(sql, params = {}) {
 
 		try {
-
-			console.log(`${this.constructor.name}.run(sql: ${sql})`, params);
 
 			if (Array.isArray(params))
 				return this.#db.prepare(sql).run(...params);

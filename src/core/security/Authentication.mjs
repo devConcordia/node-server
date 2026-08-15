@@ -16,9 +16,9 @@ export class Authentication {
 	/** fromRequest
 	 *
 	 * @param {RequestContext} request
-	 * @return {Boolean}
+	 * @return {Promise<boolean>}
 	 */
-	fromRequest(request) {
+	async fromRequest(request) {
 
 		throw new Error(`${this.constructor.name}.fromRequest: not implemented`);
 
