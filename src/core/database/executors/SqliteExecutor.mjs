@@ -76,7 +76,7 @@ export class SqliteExecutor extends Executor {
 
 		} catch (err) {
 
-			throw new Error(`SqliteExecutor.all: ${err.message}`);
+			throw new Error(`${this.constructor.name}.all: ${err.message}`);
 
 		}
 
@@ -122,9 +122,47 @@ export class SqliteExecutor extends Executor {
 
 		} catch (err) {
 
-			throw new Error(`SqliteExecutor.run: ${err.message}`);
+			throw new Error(`${this.constructor.name}.run: ${err.message}`);
 
 		}
+
+	}
+
+	/**
+	 *
+	 * @param {string} sql
+	 */
+	execute(sql) {
+
+		this.#db.exec(sql);
+
+	}
+
+	/**
+	 *
+	 */
+	transaction() {
+
+		this.execute('begin transaction;');
+
+	}
+
+	/**
+	 *
+	 */
+	commit() {
+
+		this.execute('commit;');
+
+	}
+
+
+	/**
+	 *
+	 */
+	rollback() {
+
+		this.execute('rollback;');
 
 	}
 

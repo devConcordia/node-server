@@ -254,4 +254,30 @@ export class Repository {
 		return output;
 	}
 
+	/**
+	 *
+	 * @param {Function} handler
+	 */
+	transaction(handler) {
+
+		const execute = this.#executor;
+
+		try {
+
+			execute.transaction();
+
+			handler(execute);
+
+			execute.commit();
+
+		} catch (err) {
+
+			execute.rollback();
+
+			throw err;
+
+		}
+
+	}
+
 }

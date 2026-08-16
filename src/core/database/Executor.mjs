@@ -28,15 +28,33 @@ export class Executor {
 
 	}
 
-	transaction(callback) {
+	getTableInfo(callback) {
+
+		throw new Error(`${this.constructor.name}.getTableInfo() not implemented`);
+
+	}
+
+	execute() {
+
+		throw new Error(`${this.constructor.name}.execute() not implemented`);
+
+	}
+
+	transaction() {
 
 		throw new Error(`${this.constructor.name}.transaction() not implemented`);
 
 	}
 
-	getTableInfo(callback) {
+	commit() {
 
-		throw new Error(`${this.constructor.name}.getTableInfo() not implemented`);
+		throw new Error(`${this.constructor.name}.commit() not implemented`);
+
+	}
+
+	rollback() {
+
+		throw new Error(`${this.constructor.name}.rollback() not implemented`);
 
 	}
 
