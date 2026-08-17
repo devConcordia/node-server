@@ -1,15 +1,14 @@
 import process from 'node:process';
 import {DatabaseSync} from 'node:sqlite';
 import {SqliteExecutor} from '../src/core/database/executors/SqliteExecutor.mjs';
+import {CreateDatabaseSchemaUseCase} from '../src/modules/ops/application/CreateDatabaseSchemaUseCase.mjs';
 import {MigrationRepository} from '../src/modules/ops/infrastructure/repositories/MigrationRepository.mjs';
-import {MigrationFileReader} from '../src/modules/ops/infrastructure/io/MigrationFileReader.mjs';
 import {RunMigrationsUseCase} from '../src/modules/ops/application/RunMigrationsUseCase.mjs';
 
 const databasePath = process.env.DB_MAIN_PATH;
 const configPath = process.env.DB_MAIN_CONFIG;
 
 ///
-
 const database = new DatabaseSync(databasePath, {});
 const executor = new SqliteExecutor(database);
 
@@ -26,12 +25,14 @@ executor.execute(
 	' executed_at datetime default current_timestamp );'
 );
 
+///
 const repository = new MigrationRepository(executor);
-const fileReader = new MigrationFileReader(configPath + '/migrations');
 
-const migrationUseCase = new RunMigrationsUseCase(console, repository, fileReader);
+const migrationUseCase = new RunMigrationsUseCase(console, repository);
 
-migrationUseCase.execute();
+const createDatabaseUseCase = new CreateDatabaseSchemaUseCase(executor);
 
+///
+migrationUseCase.execute(configPath + '/migrations');
 
-
+createDatabaseUseCase.execute(configPath, '/schema.sql');

@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import crypto from 'node:crypto';
 import {Migration} from '../domain/Migration.mjs';
 
@@ -8,47 +10,32 @@ export class RunMigrationsUseCase {
 
 	/**
 	 *
-	 * @param logger
+	 * @param {Console|Logger} logger
 	 * @param {MigrationRepository} migrationRepository
-	 * @param {MigrationFileReader} migrationFileReader
 	 */
-	constructor(logger, migrationRepository, migrationFileReader) {
+	constructor(logger, migrationRepository) {
 		this.logger = logger;
-		this.repository = migrationRepository;
-		this.fileReader = migrationFileReader;
+		this.migrationRepository = migrationRepository;
 	}
 
-	execute() {
+	execute(dir) {
 
-		const repository = this.repository;
-
-		const files = this.fileReader.list();
+		const files = this.getSqlFiles(dir);
 
 		for (const filename of files) {
 
-			const content = this.fileReader.read(filename);
+			const content = this.getFileContent(dir, filename);
 
 			const checksum = this.getChecksum(content);
 
-			const migration = repository.findByFileName(filename);
-
-			if (migration) {
-
-				if (migration.checksum !== checksum)
-					throw new Error(`RunMigrationsUseCase.execute: migration '${filename}' has been modified.`);
-
-				this.logger.info(`RunMigrationsUseCase.execute: '${filename}' skipped`);
-
-				continue;
-
-			}
+			if (this.wasExecuted(filename, checksum)) continue;
 
 			///
-			repository.transaction(function (executor) {
+			this.migrationRepository.transaction(executor => {
 
 				executor.execute(content);
 
-				repository.create(new Migration({filename, checksum}));
+				this.migrationRepository.create(new Migration({filename, checksum}));
 
 			});
 
@@ -58,9 +45,61 @@ export class RunMigrationsUseCase {
 
 	}
 
+	wasExecuted(filename, checksum) {
+
+		const migration = this.migrationRepository.findByFileName(filename);
+
+		if (migration) {
+
+			if (migration.checksum !== checksum)
+				throw new Error(`RunMigrationsUseCase.execute: migration '${filename}' has been modified.`);
+
+			this.logger.info(`RunMigrationsUseCase.execute: '${filename}' skipped`);
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	/**
+	 *
+	 * @param {string} content
+	 * @return {*}
+	 */
 	getChecksum(content) {
 
 		return crypto.createHash('sha256').update(content).digest('hex');
+
+	}
+
+	/**
+	 *
+	 * @param {string} dir
+	 * @param {string} filename
+	 * @return {*}
+	 */
+	getFileContent(dir, filename) {
+
+		const filepath = path.join(dir, filename);
+
+		if (!fs.existsSync(filepath))
+			throw new Error(`MigrationFileReader.read: file '${filepath}' does not exist.`);
+
+		return fs.readFileSync(filepath, 'utf8');
+
+	}
+
+	/**
+	 *
+	 * @param {string} dir
+	 * @return {string[]}
+	 */
+	getSqlFiles(dir) {
+
+		return fs.readdirSync(dir).filter(f => f.endsWith('.sql')).sort();
 
 	}
 
