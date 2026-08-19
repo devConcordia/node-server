@@ -20,14 +20,27 @@ export class CreateAccountHandler extends Handler {
 
 	/**
 	 *
+	 * @param {Authorize} authorize
 	 * @param {CreateAccountUseCase} createAccountUseCase
 	 */
-	constructor(createAccountUseCase) {
+	constructor(authorize, createAccountUseCase) {
 		super();
+		this.authorize = authorize;
 		this.createAccountUseCase = createAccountUseCase;
 	}
 
-	resolve(request, response) {
+	isAuthorized(request) {
+
+		const account = request.getCurrentAccount();
+
+		if (account)
+			return this.authorize.hasPermission(account, this.createAccountUseCase.PERMISSION);
+
+		return false;
+
+	}
+
+	async resolve(request, response) {
 
 		const input = request.getPayload();
 

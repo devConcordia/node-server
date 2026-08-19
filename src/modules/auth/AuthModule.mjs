@@ -76,7 +76,10 @@ export class AuthModule extends Module {
 	addHandlers(container) {
 
 		container.transient(CreateAccountHandler, function (ctx) {
-			return new CreateAccountHandler(ctx.get(CreateAccountUseCase))
+			return new CreateAccountHandler(
+				ctx.get(Authorize),
+				ctx.get(CreateAccountUseCase)
+			)
 		});
 
 		container.transient(ListAccountHandler, function (ctx) {

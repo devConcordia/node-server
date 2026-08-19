@@ -19,12 +19,24 @@ export class UpdateAccountHandler extends Handler {
 		return [JWTAuthentication];
 	}
 
-	constructor(updateAccountUseCase) {
+	constructor(authorize,updateAccountUseCase) {
 		super();
+		this.authorize = authorize;
 		this.updateAccountUseCase = updateAccountUseCase;
 	}
 
-	resolve(request, response) {
+	isAuthorized(request) {
+
+		const account = request.getCurrentAccount();
+
+		if (account)
+			return this.authorize.hasPermission(account, this.listAccountUseCase.PERMISSION);
+
+		return false;
+
+	}
+
+	async resolve(request, response) {
 
 		const input = request.getPayload();
 

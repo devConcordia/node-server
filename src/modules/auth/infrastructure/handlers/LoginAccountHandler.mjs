@@ -23,7 +23,7 @@ export class LoginAccountHandler extends Handler {
 		this.loginAccountUseCase = loginAccountUseCase;
 	}
 
-	resolve(request, response) {
+	async resolve(request, response) {
 
 		const account = request.getCurrentAccount();
 

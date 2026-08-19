@@ -1,4 +1,5 @@
 import {Assert} from '../../../core/assertion/Assert.mjs';
+import {Account} from '../domain/Account.mjs';
 
 /** UpdateAccountUseCase
  *
@@ -23,8 +24,7 @@ export class UpdateAccountUseCase {
 	 */
 	execute(input) {
 
-		const account = new Account();
-		account.assign(input);
+		const account = new Account(input);
 
 		Assert.require('Account.id', account.id, Number);
 

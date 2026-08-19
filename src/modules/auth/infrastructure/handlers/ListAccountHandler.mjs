@@ -45,7 +45,7 @@ export class ListAccountHandler extends Handler {
 	 * @param {RequestContext} request
 	 * @param {ResponseContext} response
 	 */
-	resolve(request, response) {
+	async resolve(request, response) {
 
 		const accounts = this.listAccountUseCase.execute();
 
