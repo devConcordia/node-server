@@ -64,8 +64,21 @@ export class Server {
 		return {
 			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', /// PATCH
 			'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-			'Access-Control-Max-Age': 86400
+			'Access-Control-Max-Age': 86400,
+
+			'X-Content-Type-Options': 'nosniff',
+			'X-Frame-Options': 'DENY',
+			'Referrer-Policy': 'no-referrer',
+			'X-XSS-Protection': '0'
 		};
+	}
+
+	/**
+	 *
+	 * @return {number}
+	 */
+	get MAX_UPLOAD() {
+		return 1e6 /// 1MB
 	}
 
 	/**
@@ -144,8 +157,15 @@ export class Server {
 			///
 			const chunks = [];
 
-			for await (const chunk of request)
+			let total = 0; // in bytes
+			for await (const chunk of request) {
+				total += chunk.length;
+				if (total > self.MAX_UPLOAD) {
+					responseContext.replyError(413, 'Payload Too Large', 'Request body exceeds limit');
+					return;
+				}
 				chunks.push(chunk);
+			}
 
 			const payload = Buffer.concat(chunks).toString();
 			const url = new URL(request.url, self.BASE_URL);
