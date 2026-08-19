@@ -1,6 +1,7 @@
 import process from 'node:process';
 
 import {Handler} from '../../../../core/network/Handler.mjs';
+import {JWTAuthentication} from '../../../../infrastructure/security/authentications/JWTAuthentication.mjs';
 
 /**
  *
@@ -15,7 +16,27 @@ export class MetricsHandler extends Handler {
 		return '/api/admin/metrics';
 	}
 
-	resolve(request, response) {
+	static get AUTH() {
+		return [JWTAuthentication];
+	}
+
+	constructor(authorize) {
+		super();
+		this.authorize = authorize;
+	}
+
+	isAuthorized(request) {
+
+		const account = request.getCurrentAccount();
+
+		if (account)
+			return this.authorize.isRole(account, 'MASTER');
+
+		return false;
+
+	}
+
+	async resolve(request, response) {
 
 		const sse = response.createEventStream();
 

@@ -19,7 +19,7 @@ export class Authorize {
 	 */
 	isRole(account, role) {
 
-		return this.accountRepository.hasPermission(account.id, role);
+		return this.accountRepository.hasRole(account.id, role);
 
 	}
 
