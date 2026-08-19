@@ -48,6 +48,9 @@ export class Router {
 
 		const routes = this.#routes[method];
 
+		if (!routes)
+			return null;
+
 		for (const route of routes) {
 
 			const match = route.match(pathname);
