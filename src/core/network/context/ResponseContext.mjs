@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {Buffer} from 'node:buffer';
 import {EventStream} from './EventStream.mjs';
 
 /** ResponseContext
@@ -57,7 +58,7 @@ export class ResponseContext {
 		const {response} = this;
 
 		response.setHeader('Content-Type', contentType);
-		response.setHeader('Content-Length', content.length);
+		response.setHeader('Content-Length', Buffer.byteLength(content, 'utf8'));
 
 		response.statusCode = statusCode;
 		response.end(content);
@@ -77,7 +78,7 @@ export class ResponseContext {
 
 		if (!stat) stat = fs.statSync(path);
 
-		response.statusCode = 200;
+		response.statusCode = statusCode;
 		response.setHeader('Content-Type', contentType);
 		response.setHeader('Content-Length', stat.size);
 
