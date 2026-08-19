@@ -13,6 +13,7 @@ import {LoginAccountUseCase} from './application/LoginAccountUseCase.mjs';
 import {JsonWebToken} from '../../infrastructure/security/JsonWebToken.mjs';
 import {Authorize} from '../../infrastructure/security/Authorize.mjs';
 import {PasswordHasher} from '../../infrastructure/security/PasswordHasher.mjs';
+import {UpdateAccountHandler} from './infrastructure/handlers/UpdateAccountHandler.mjs';
 
 /**
  *
@@ -38,6 +39,7 @@ export class AuthModule extends Module {
 		router.enable(CreateAccountHandler);
 		router.enable(ListAccountHandler);
 		router.enable(LoginAccountHandler);
+		router.enable(UpdateAccountHandler);
 
 	}
 
@@ -86,6 +88,13 @@ export class AuthModule extends Module {
 			return new ListAccountHandler(
 				ctx.get(Authorize),
 				ctx.get(ListAccountUseCase)
+			)
+		});
+
+		container.transient(UpdateAccountHandler, function (ctx) {
+			return new UpdateAccountHandler(
+				ctx.get(Authorize),
+				ctx.get(UpdateAccountHandler)
 			)
 		});
 

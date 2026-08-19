@@ -7,7 +7,6 @@ import {JWTAuthentication} from '../../../../infrastructure/security/authenticat
 export class UpdateAccountHandler extends Handler {
 
 	static get METHOD() {
-
 		return 'PUT';
 	}
 
@@ -19,7 +18,12 @@ export class UpdateAccountHandler extends Handler {
 		return [JWTAuthentication];
 	}
 
-	constructor(authorize,updateAccountUseCase) {
+	/**
+	 *
+	 * @param {Authorize} authorize
+	 * @param {UpdateAccountUseCase} updateAccountUseCase
+	 */
+	constructor(authorize, updateAccountUseCase) {
 		super();
 		this.authorize = authorize;
 		this.updateAccountUseCase = updateAccountUseCase;
