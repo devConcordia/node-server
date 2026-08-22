@@ -15,6 +15,9 @@ export class FileTransport extends Transport {
 
 		super();
 
+		if (!fs.existsSync(dir))
+			fs.mkdirSync(dir, {recursive: true});
+
 		this.#dir = dir;
 
 	}
