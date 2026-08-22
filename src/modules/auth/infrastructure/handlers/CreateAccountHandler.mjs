@@ -44,7 +44,7 @@ export class CreateAccountHandler extends Handler {
 
 		const input = request.getPayload();
 
-		if (this.createAccountUseCase.execute(input) < 1) {
+		if (await this.createAccountUseCase.execute(input) < 1) {
 
 			response.replyJson(400, {error: "can't create auth"});
 

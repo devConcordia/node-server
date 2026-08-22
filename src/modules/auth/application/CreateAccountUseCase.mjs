@@ -23,10 +23,9 @@ export class CreateAccountUseCase {
 	 *
 	 * @param {Object} input
 	 */
-	execute(input) {
+	async execute(input) {
 
-		input.password = this.passwordHasher.hash(input.password);
-		input.created = new Date();
+		input.password_hash = await this.passwordHasher.hash(input.password);
 
 		const account = new Account(input);
 
