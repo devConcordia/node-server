@@ -1,12 +1,17 @@
+import fs from 'node:fs';
 import process from 'node:process';
 import {DatabaseSync} from 'node:sqlite';
 import {SqliteExecutor} from '../src/core/database/executors/SqliteExecutor.mjs';
 import {CreateDatabaseSchemaUseCase} from '../src/modules/ops/application/CreateDatabaseSchemaUseCase.mjs';
 import {MigrationRepository} from '../src/modules/ops/infrastructure/repositories/MigrationRepository.mjs';
 import {RunMigrationsUseCase} from '../src/modules/ops/application/RunMigrationsUseCase.mjs';
+import {RunSqlUseCase} from '../src/modules/ops/application/RunSqlUseCase.mjs';
 
 const databasePath = process.env.DB_MAIN_PATH;
 const configPath = process.env.DB_MAIN_CONFIG;
+
+if (!fs.existsSync(databasePath))
+	fs.mkdirSync(databasePath.split('/').slice(0, -1).join('/'), {recursive: true});
 
 ///
 const database = new DatabaseSync(databasePath, {});
@@ -27,12 +32,11 @@ executor.execute(
 
 ///
 const repository = new MigrationRepository(executor);
-
 const migrationUseCase = new RunMigrationsUseCase(console, repository);
-
-const createDatabaseUseCase = new CreateDatabaseSchemaUseCase(executor);
+const createDatabaseSchemaUseCase = new CreateDatabaseSchemaUseCase(executor);
+const runSqlUseCase = new RunSqlUseCase(executor);
 
 ///
 migrationUseCase.execute(configPath + '/migrations');
-
-createDatabaseUseCase.execute(configPath, '/schema.sql');
+createDatabaseSchemaUseCase.execute(configPath, '/schema.sql');
+runSqlUseCase.execute(configPath, '/initial-data.sql');

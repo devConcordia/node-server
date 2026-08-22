@@ -4,7 +4,7 @@ import path from 'node:path';
 /**
  *
  */
-export class RestoreDatabaseSchemaUseCase {
+export class RunSqlUseCase {
 
 	constructor(executor) {
 		this.executor = executor;
