@@ -3,11 +3,12 @@
  */
 export class LoginAccountDTO {
 
-	id = undefined;
-	name = undefined;
-	email = undefined;
+	id;
+	name;
+	email;
+	status;
 
-	token = undefined;
+	token;
 
 	/**
 	 *
@@ -19,6 +20,7 @@ export class LoginAccountDTO {
 		this.id = account.id;
 		this.name = account.name;
 		this.email = account.email;
+		this.status = account.status;
 
 		this.token = token;
 

@@ -3,9 +3,9 @@
  */
 export class Role {
 
-	#id = undefined;
-	#name = undefined;
-	#description = undefined;
+	#id;
+	#name;
+	#description;
 
 	constructor(data) {
 		if ('id' in data) this.id = data.id;
@@ -14,7 +14,7 @@ export class Role {
 	}
 
 	get id() {
-		return this.#id
+		return this.#id;
 	}
 
 	set id(value) {
@@ -22,12 +22,12 @@ export class Role {
 		if (typeof value !== 'number')
 			throw new TypeError('Role.id: must be a number');
 
-		this.#id = value
+		this.#id = value;
 
 	}
 
 	get name() {
-		return this.#name
+		return this.#name;
 	}
 
 	set name(value) {
@@ -35,12 +35,12 @@ export class Role {
 		if (typeof value !== 'string')
 			throw new TypeError('Role.name: must be a string');
 
-		this.#name = value
+		this.#name = value;
 
 	}
 
 	get description() {
-		return this.#description
+		return this.#description;
 	}
 
 	set description(value) {
@@ -48,7 +48,7 @@ export class Role {
 		if (typeof value !== 'string')
 			throw new TypeError('Role.description: must be a string');
 
-		this.#description = value
+		this.#description = value;
 
 	}
 

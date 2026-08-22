@@ -25,7 +25,8 @@ export class ListAccountUseCase {
 				return {
 					id: e.id,
 					name: e.name,
-					email: e.email
+					email: e.email,
+					status: e.status
 				}
 			});
 
